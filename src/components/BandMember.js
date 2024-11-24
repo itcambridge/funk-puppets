@@ -8,12 +8,18 @@ function BandMember({ member, onMemberClick }) {
   const [error, setError] = useState(null);
   const [tempo, setTempo] = useState(1.0);
   const [volume, setVolume] = useState(1.0);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    console.log('Static Image Path:', process.env.PUBLIC_URL + member.imagePath);
+    console.log('GIF Path:', process.env.PUBLIC_URL + member.gifPath);
+  }, [member]);
 
   useEffect(() => {
     const soundPath = `${process.env.PUBLIC_URL}${member.soundBase}${currentTrack}.mp3`;
     console.log(`Attempting to load sound from: ${soundPath}`);
 
-    const newSound = new Howl({
+    let newSound = new Howl({
       src: [soundPath],
       loop: true,
       html5: true,
@@ -36,9 +42,7 @@ function BandMember({ member, onMemberClick }) {
     setSound(newSound);
 
     return () => {
-      if (sound) {
-        sound.unload();
-      }
+      newSound.unload();
     };
   }, [currentTrack, member.soundBase, tempo, volume]);
 
@@ -89,9 +93,11 @@ function BandMember({ member, onMemberClick }) {
         alt={member.name}
         onError={(e) => {
           console.error(`Failed to load image: ${e.target.src}`);
+          setImageError(true);
           setError('Failed to load image');
         }}
       />
+      {imageError && <div style={{color: 'red'}}>Image failed to load</div>}
       <div className="member-controls">
         <div className="track-buttons">
           {member.tracks.map((trackNum) => (
