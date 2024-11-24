@@ -1,0 +1,164 @@
+/* Funky Styling for Band Members */
+
+.band-member {
+    min-width: 200px;
+    max-width: 200px;
+    flex: 0 0 auto;
+    padding: 15px;
+    background: linear-gradient(135deg, #ff00cc 0%, #333399 100%);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(255, 0, 200, 0.5);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .band-member:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 0 25px rgba(255, 0, 200, 0.7);
+    }
+
+    .band-member img {
+        width: 100%;
+        height: auto;
+        cursor: pointer;
+        border-radius: 10px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        transition: transform 0.3s, border-color 0.3s;
+    }
+
+        .band-member img:hover {
+            transform: scale(1.05);
+            border-color: #fff;
+        }
+
+.member-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px #ff00cc;
+    text-align: center;
+}
+
+.play-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #00ffcc 0%, #0066ff 100%);
+    border: none;
+    border-radius: 25px;
+    color: #fff;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+    .play-button:hover {
+        background: linear-gradient(135deg, #0066ff 0%, #00ffcc 100%);
+    }
+
+    .play-button.playing {
+        background: linear-gradient(135deg, #ff9900 0%, #ff6600 100%);
+    }
+
+        .play-button.playing:hover {
+            background: linear-gradient(135deg, #ff6600 0%, #ff9900 100%);
+        }
+
+.track-button {
+    flex: 1;
+    padding: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: #fff;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+    .track-button:hover {
+        background: rgba(255, 255, 255, 0.4);
+        border-color: #fff;
+    }
+
+    .track-button.active {
+        background: #ff00cc;
+        color: #fff;
+        border-color: #ff00cc;
+    }
+
+.tempo-slider::-webkit-slider-thumb {
+    background: #ff9900;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    background: #ff9900;
+}
+
+.band-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 30px;
+    margin: 0 auto;
+    width: 95%;
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(135deg, #333399 0%, #ff00cc 100%);
+    border-radius: 25px;
+    box-shadow: 0 0 20px rgba(255, 0, 200, 0.5);
+}
+
+.App {
+    text-align: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #000428 0%, #004e92 100%);
+    color: white;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+}
+
+body {
+    font-family: 'Press Start 2P', cursive;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 10px rgba(255, 0, 200, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(255, 0, 200, 1);
+    }
+
+    100% {
+        box-shadow: 0 0 10px rgba(255, 0, 200, 0.5);
+    }
+}
+
+.band-member {
+    animation: pulse 2s infinite;
+}
+
+.style-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ff00cc 0%, #333399 100%);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+    .style-button:hover {
+        background: linear-gradient(135deg, #333399 0%, #ff00cc 100%);
+        border-color: #fff;
+    }

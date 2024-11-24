@@ -1,8 +1,26 @@
+.App::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(40, 44, 52, 0.3);
+  z-index: 0;
+}
+
 .App {
   text-align: center;
   min-height: 100vh;
-  background-color: #282c34;
+  background-color: transparent;
   color: white;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  position: relative;
 }
 
 .App-logo {
@@ -18,6 +36,16 @@
 
 .App-header {
   padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 10px;
+  margin: 10px auto;
+  width: fit-content;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1;
 }
 
 .App-link {
@@ -40,6 +68,13 @@
   padding: 10px;
   margin: 0 auto;
   width: 95%;
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  padding: 20px;
 }
 
 .band-member {
@@ -47,16 +82,14 @@
   max-width: 200px;
   flex: 0 0 auto;
   padding: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(40, 44, 52, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-radius: 8px;
-  transition: transform 0.2s;
   display: flex;
   flex-direction: column;
   gap: 5px;
-}
-
-.band-member:hover {
-  transform: scale(1.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .band-member img {
@@ -140,13 +173,13 @@
 }
 
 .track-buttons {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 5px;
   margin-bottom: 5px;
 }
 
 .track-button {
-  flex: 1;
   padding: 5px;
   font-size: 12px;
   cursor: pointer;
@@ -164,5 +197,121 @@
 .track-button.active {
   background-color: #61dafb;
   color: #282c34;
+  border-color: #61dafb;
+}
+
+.tempo-control {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tempo-slider {
+  width: 100%;
+  height: 5px;
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  outline: none;
+}
+
+.tempo-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #61dafb;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.tempo-slider::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  background: #61dafb;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.tempo-label {
+  font-size: 12px;
+  color: #61dafb;
+}
+
+.volume-control {
+  margin: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.volume-slider {
+  width: 100%;
+  height: 5px;
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  outline: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #4CAF50;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  background: #4CAF50;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.volume-label {
+  font-size: 12px;
+  color: #4CAF50;
+}
+
+.logo-gif {
+  max-width: 200px;
+  height: auto;
+  margin: 0;
+  display: block;
+}
+
+.style-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
+}
+
+.style-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.style-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.style-button.active {
+  background: rgba(97, 218, 251, 0.2);
   border-color: #61dafb;
 }
