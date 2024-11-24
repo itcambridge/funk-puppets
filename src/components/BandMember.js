@@ -113,14 +113,14 @@ function BandMember({ member, onMemberClick }) {
         <div className="tempo-control">
           <input
             type="range"
-            min="0.5"
-            max="1.5"
-            step="0.1"
+            min="0.8"
+            max="1.2"
+            step="0.05"
             value={tempo}
             onChange={handleTempoChange}
             className="tempo-slider"
           />
-          <div className="tempo-label">Speed: {tempo.toFixed(1)}x</div>
+          <div className="tempo-label">Speed: {tempo.toFixed(2)}x</div>
         </div>
         <div className="volume-control">
           <input

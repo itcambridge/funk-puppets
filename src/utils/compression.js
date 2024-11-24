@@ -9,9 +9,9 @@ const imageminGifsicle = require('imagemin-gifsicle');
             destination: 'public/assets/gifs/compressed',
             plugins: [
                 imageminGifsicle({
-                    optimizationLevel: 2,  // Value from 1 to 3
-                    interlaced: false,     // Don't interlace, better compression
-                    colors: 128            // Reduce colors to 128
+                    optimizationLevel: 2,
+                    interlaced: false,
+                    colors: 128
                 })
             ]
         });

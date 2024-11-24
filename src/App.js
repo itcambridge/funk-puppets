@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import BandMember from './components/BandMember';
-import { bandMembers } from './config/bandMembers';
+import BandMember from './components/BandMember.js';
+import { bandMembers } from './config/bandMembers.js';
 import './App.css';
 import defaultBackground from './assets/background/bg.png';
 import defaultBackground2 from './assets/background/bg2.png';
@@ -55,11 +55,17 @@ function App() {
   return (
     <div className="App" style={{ backgroundImage: `url(${currentBackground})` }}>
       <header className="App-header">
-        <img 
-          src={process.env.PUBLIC_URL + '/assets/gifs/logo.gif'} 
-          alt="Funk Puppets Logo"
-          className="logo-gif"
-        />
+        <h1 className="funky-title">
+          {'FUNK   PUPPETS'.split('').map((letter, index) => (
+            <span 
+              key={index} 
+              className={`dancing-letter ${playingMembers.size > 0 ? 'dancing' : ''}`}
+              style={{ marginLeft: letter === ' ' ? '10px' : '0' }}
+            >
+              {letter}
+            </span>
+          ))}
+        </h1>
       </header>
       <div className="style-toggle">
         <button 

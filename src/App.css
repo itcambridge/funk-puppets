@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Glitch&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Shade&display=swap');
+
 .App::before {
   content: '';
   position: fixed;
@@ -35,15 +39,15 @@
 }
 
 .App-header {
-  padding: 20px;
+  padding: 5px 15px;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border-radius: 10px;
-  margin: 10px auto;
+  border-radius: 8px;
+  margin: 8px auto;
   width: fit-content;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   position: relative;
   z-index: 1;
 }
@@ -67,7 +71,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px;
-  margin: 0 auto;
+  margin: auto;
   width: 95%;
   position: relative;
   z-index: 1;
@@ -75,6 +79,12 @@
   -webkit-backdrop-filter: blur(5px);
   background: rgba(0, 0, 0, 0.2);
   border-radius: 15px;
+  min-height: 60vh;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -45%);
 }
 
 .band-member {
@@ -281,7 +291,7 @@
 }
 
 .logo-gif {
-  max-width: 150px;
+  max-width: 225px;
   height: auto;
   margin: 0 auto;
 }
@@ -334,6 +344,10 @@
   .band-container {
     flex-direction: row;
     flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    min-height: 55vh;
+    transform: translate(-50%, -40%);
   }
 
   .band-member {
@@ -341,7 +355,7 @@
   }
 
   .logo-gif {
-    max-width: 200px;
+    max-width: 300px;
   }
 }
 
@@ -365,7 +379,7 @@
   }
 
   .logo-gif {
-    max-width: 100px;
+    max-width: 150px;
   }
 }
 
@@ -381,5 +395,105 @@
 
   .tempo-label, .volume-label {
     font-size: 11px;
+  }
+}
+
+.funky-title {
+  font-family: 'Bungee Shade', cursive;
+  font-size: 3.8rem;
+  background: linear-gradient(45deg, #61dafb, #4CAF50, #ff9800);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 
+    2px 2px 0px rgba(97, 218, 251, 0.5),
+    -2px -2px 0px rgba(76, 175, 80, 0.5);
+  margin: 0;
+  padding: 5px;
+  letter-spacing: 3px;
+  font-weight: bold;
+  filter: drop-shadow(0 0 15px rgba(97, 218, 251, 0.3));
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.dancing-letter {
+  display: inline-block;
+  transition: color 0.3s ease;
+}
+
+.dancing-letter.dancing {
+  animation: dance 1s ease-in-out infinite;
+  animation-delay: calc(var(--letter-index, 0) * 0.1s);
+  background: linear-gradient(
+    90deg,
+    #ff0000,
+    #ff7f00,
+    #ffff00,
+    #00ff00,
+    #0000ff,
+    #4b0082,
+    #8f00ff
+  );
+  background-size: 1000% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: 
+    dance 1s ease-in-out infinite,
+    rainbow-wave 8s linear infinite;
+  animation-delay: 
+    calc(var(--letter-index, 0) * 0.1s),
+    calc(var(--letter-index, 0) * 0.5s);
+}
+
+@keyframes rainbow-wave {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes dance {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-5px) rotate(5deg);
+  }
+  75% {
+    transform: translateY(5px) rotate(-5deg);
+  }
+}
+
+/* Add random variations to each letter */
+.dancing-letter:nth-child(2n) {
+  animation-duration: 0.8s;
+}
+
+.dancing-letter:nth-child(3n) {
+  animation-duration: 1.2s;
+}
+
+.dancing-letter:nth-child(4n) {
+  animation-direction: alternate;
+}
+
+.dancing-letter:nth-child(5n) {
+  animation-delay: calc(var(--letter-index, 0) * 0.15s);
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 150%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .funky-title {
+    font-size: 2.2rem;
+    letter-spacing: 2px;
   }
 }

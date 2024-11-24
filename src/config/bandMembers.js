@@ -42,9 +42,17 @@ export const bandMembers = [
   {
     id: 6,
     name: 'Synth',
-    imagePath: '/assets/images/Synth.png',
+    imagePath: '/assets/images/synth.png',
     gifPath: '/assets/gifs/synth.gif',
     soundBase: '/assets/sounds/synth',
+    tracks: [1, 2, 3, 4, 5, 6]
+  },
+  {
+    id: 7,
+    name: 'Singer',
+    imagePath: '/assets/images/singer.png',
+    gifPath: '/assets/gifs/singer.gif',
+    soundBase: '/assets/sounds/singer',
     tracks: [1, 2, 3, 4, 5, 6]
   }
 ]; 
