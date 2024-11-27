@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Howl } from 'howler';
-import ReactGA from 'react-ga4';
 
 function BandMember({ member, onMemberClick }) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -48,7 +47,7 @@ function BandMember({ member, onMemberClick }) {
     return () => {
       newSound.unload();
     };
-  }, [currentTrack, member.soundBase]);
+  }, [currentTrack, member.soundBase, isPlaying]);
 
   useEffect(() => {
     if (sound) {
@@ -78,34 +77,11 @@ function BandMember({ member, onMemberClick }) {
     e.stopPropagation();
   };
 
-  const togglePlay = () => {
-    if (sound) {
-      try {
-        if (isPlaying) {
-          sound.pause();
-          ReactGA.event({
-            category: 'Track',
-            action: 'Stop',
-            label: `${member.name} - Track ${currentTrack}`
-          });
-        } else {
-          sound.play();
-          ReactGA.event({
-            category: 'Track',
-            action: 'Play',
-            label: `${member.name} - Track ${currentTrack}`,
-            value: Math.round(tempo * 100)
-          });
-        }
-        setIsPlaying(!isPlaying);
-      } catch (err) {
-        console.error(`Error toggling play state:`, err);
-        setError(`Failed to ${isPlaying ? 'stop' : 'play'} sound`);
-      }
-    } else {
-      console.error('No sound loaded for', member.name);
-      setError('Sound not loaded yet');
-    }
+  const handlePlayClick = () => {
+    const newIsPlaying = !isPlaying;
+    setIsPlaying(newIsPlaying);
+    
+    onMemberClick(newIsPlaying);
   };
 
   return (
@@ -161,7 +137,7 @@ function BandMember({ member, onMemberClick }) {
         </div>
         <button 
           className={`play-button ${isPlaying ? 'playing' : ''}`}
-          onClick={togglePlay}
+          onClick={handlePlayClick}
         >
           {isPlaying ? 'Stop' : 'Play'}
         </button>

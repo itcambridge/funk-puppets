@@ -16,35 +16,53 @@ function App() {
   const [isPsychedelic, setIsPsychedelic] = useState(false);
 
   const handleBandMemberPlay = (memberName, isPlaying) => {
+    console.log('handleBandMemberPlay called:', { memberName, isPlaying });
+    
     setPlayingMembers(prevPlaying => {
       const newPlaying = new Set(prevPlaying);
       if (isPlaying) {
         newPlaying.add(memberName);
         
-        // Update background
+        // Use drums background for singer
         const bgFileName = isPsychedelic ? 
-          `${memberName.toLowerCase()}-bg2.gif` : 
-          `${memberName.toLowerCase()}-bg.gif`;
+          `${memberName.toLowerCase() === 'singer' ? 'drums' : memberName.toLowerCase()}-bg2.gif` : 
+          `${memberName.toLowerCase() === 'singer' ? 'drums' : memberName.toLowerCase()}-bg.gif`;
         const fullPath = `/assets/background/${bgFileName}`;
-        console.log('Setting background to:', fullPath);
+        const fullUrl = `${process.env.PUBLIC_URL}${fullPath}`;
+        console.log('Setting background to:', fullUrl);
         
-        // Force background update
-        const appElement = document.querySelector('.App');
-        appElement.style.backgroundImage = `url(${fullPath})`;
-        appElement.style.backgroundSize = 'cover';
-        appElement.style.backgroundRepeat = 'no-repeat';
-        setCurrentBackground(fullPath);
+        // Verify the file exists first
+        const img = new Image();
+        img.onload = () => {
+          console.log('Background image loaded successfully:', fullUrl);
+          const appElement = document.querySelector('.App');
+          if (appElement) {
+            appElement.style.backgroundImage = `url("${fullUrl}")`;
+            appElement.style.backgroundSize = 'cover';
+            appElement.style.backgroundPosition = 'center';
+            appElement.style.backgroundRepeat = 'no-repeat';
+            setCurrentBackground(fullPath);
+          }
+        };
+        img.onerror = () => {
+          console.error('Failed to load background image:', fullUrl);
+        };
+        img.src = fullUrl;
       } else {
         newPlaying.delete(memberName);
         
         if (newPlaying.size === 0) {
           // Reset to default background
           const defaultBg = isPsychedelic ? defaultBackground2 : defaultBackground;
+          const fullUrl = `${process.env.PUBLIC_URL}${defaultBg}`;
           const appElement = document.querySelector('.App');
-          appElement.style.backgroundImage = `url(${defaultBg})`;
-          appElement.style.backgroundSize = 'cover';
-          appElement.style.backgroundRepeat = 'no-repeat';
-          setCurrentBackground(defaultBg);
+          if (appElement) {
+            appElement.style.backgroundImage = `url("${fullUrl}")`;
+            appElement.style.backgroundSize = 'cover';
+            appElement.style.backgroundPosition = 'center';
+            appElement.style.backgroundRepeat = 'no-repeat';
+            setCurrentBackground(defaultBg);
+          }
         }
       }
       return newPlaying;
@@ -55,25 +73,44 @@ function App() {
     setIsPsychedelic(prev => {
       const newIsPsychedelic = !prev;
       if (playingMembers.size === 0) {
+        // Handle default background
         const newBg = newIsPsychedelic ? defaultBackground2 : defaultBackground;
+        const fullUrl = `${process.env.PUBLIC_URL}${newBg}`;
         const appElement = document.querySelector('.App');
-        appElement.style.backgroundImage = `url(${newBg})`;
-        appElement.style.backgroundSize = 'cover';
-        appElement.style.backgroundRepeat = 'no-repeat';
-        setCurrentBackground(newBg);
+        if (appElement) {
+          appElement.style.backgroundImage = `url("${fullUrl}")`;
+          appElement.style.backgroundSize = 'cover';
+          appElement.style.backgroundPosition = 'center';
+          appElement.style.backgroundRepeat = 'no-repeat';
+          setCurrentBackground(newBg);
+        }
       } else {
+        // Handle member background
         const playingMember = Array.from(playingMembers)[0];
         const bgFileName = newIsPsychedelic ? 
-          `${playingMember.toLowerCase()}-bg2.gif` : 
-          `${playingMember.toLowerCase()}-bg.gif`;
+          `${playingMember.toLowerCase() === 'singer' ? 'drums' : playingMember.toLowerCase()}-bg2.gif` : 
+          `${playingMember.toLowerCase() === 'singer' ? 'drums' : playingMember.toLowerCase()}-bg.gif`;
         const fullPath = `/assets/background/${bgFileName}`;
-        console.log('Toggling background to:', fullPath);
+        const fullUrl = `${process.env.PUBLIC_URL}${fullPath}`;
+        console.log('Toggling background to:', fullUrl);
         
-        const appElement = document.querySelector('.App');
-        appElement.style.backgroundImage = `url(${fullPath})`;
-        appElement.style.backgroundSize = 'cover';
-        appElement.style.backgroundRepeat = 'no-repeat';
-        setCurrentBackground(fullPath);
+        // Use the same image loading pattern as handleBandMemberPlay
+        const img = new Image();
+        img.onload = () => {
+          console.log('Background image loaded successfully:', fullUrl);
+          const appElement = document.querySelector('.App');
+          if (appElement) {
+            appElement.style.backgroundImage = `url("${fullUrl}")`;
+            appElement.style.backgroundSize = 'cover';
+            appElement.style.backgroundPosition = 'center';
+            appElement.style.backgroundRepeat = 'no-repeat';
+            setCurrentBackground(fullPath);
+          }
+        };
+        img.onerror = () => {
+          console.error('Failed to load background image:', fullUrl);
+        };
+        img.src = fullUrl;
       }
       return newIsPsychedelic;
     });

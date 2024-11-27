@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bungee+Shade&display=swap');
 
-.App::before {
+/* .App::before {
   content: '';
   position: fixed;
   top: 0;
@@ -13,7 +13,7 @@
   -webkit-backdrop-filter: blur(10px);
   background: rgba(40, 44, 52, 0.3);
   z-index: 0;
-}
+} */
 
 .App {
   text-align: center;
@@ -26,6 +26,9 @@
   background-attachment: fixed;
   position: relative;
   will-change: background-image;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .App-logo {
@@ -80,12 +83,14 @@
   -webkit-backdrop-filter: blur(5px);
   background: rgba(0, 0, 0, 0.2);
   border-radius: 15px;
-  min-height: 60vh;
+  min-height: auto;
   justify-content: center;
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -45%);
+  transform: translate(-50%, -50%);
+  max-height: 85vh;
+  overflow-y: auto;
 }
 
 .band-member {
@@ -499,6 +504,24 @@
   .funky-title {
     font-size: 2.2rem;
     letter-spacing: 2px;
+  }
+
+  .band-container {
+    position: relative;
+    transform: none;
+    top: auto;
+    left: auto;
+    margin: 20px auto;
+    width: 90%;
+    max-height: none;
+  }
+
+  .App-header {
+    margin-bottom: 10px;
+  }
+
+  .logo-gif {
+    max-width: 120px;
   }
 }
 
