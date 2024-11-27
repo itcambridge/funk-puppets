@@ -24,3 +24,6 @@ yarn-error.log*
 build.zip
 *.tar.xz
 ffmpeg*.zip
+"# FFmpeg files" 
+"ffmpeg-N-117868-gecc7d5db9c-win64-gpl/" 
+"*.exe" 
