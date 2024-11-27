@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+build
+.git
+.gitignore
+README.md
+.env
+*.log
+*.zip
+*.tar.xz
+**/spare/
+**/originals/

@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BandMember from './components/BandMember.js';
 import { bandMembers } from './config/bandMembers.js';
 import './App.css';
-import defaultBackground from './assets/background/bg.png';
-import defaultBackground2 from './assets/background/bg2.png';
+import ReactGA from 'react-ga4';
+
+// Initialize GA with your actual tracking ID
+ReactGA.initialize('G-K7ZY28NXTT');
+
+const defaultBackground = '/assets/background/bg.png';
+const defaultBackground2 = '/assets/background/bg2.png';
 
 function App() {
   const [currentBackground, setCurrentBackground] = useState(defaultBackground);
@@ -15,19 +20,31 @@ function App() {
       const newPlaying = new Set(prevPlaying);
       if (isPlaying) {
         newPlaying.add(memberName);
-        try {
-          const bgFileName = isPsychedelic ? 
-            `${memberName.toLowerCase()}-bg2.gif` : 
-            `${memberName.toLowerCase()}-bg.gif`;
-          const bgPath = require(`./assets/background/${bgFileName}`);
-          setCurrentBackground(bgPath);
-        } catch (error) {
-          console.log(`No background GIF found for ${memberName}`);
-        }
+        
+        // Update background
+        const bgFileName = isPsychedelic ? 
+          `${memberName.toLowerCase()}-bg2.gif` : 
+          `${memberName.toLowerCase()}-bg.gif`;
+        const fullPath = `/assets/background/${bgFileName}`;
+        console.log('Setting background to:', fullPath);
+        
+        // Force background update
+        const appElement = document.querySelector('.App');
+        appElement.style.backgroundImage = `url(${fullPath})`;
+        appElement.style.backgroundSize = 'cover';
+        appElement.style.backgroundRepeat = 'no-repeat';
+        setCurrentBackground(fullPath);
       } else {
         newPlaying.delete(memberName);
+        
         if (newPlaying.size === 0) {
-          setCurrentBackground(isPsychedelic ? defaultBackground2 : defaultBackground);
+          // Reset to default background
+          const defaultBg = isPsychedelic ? defaultBackground2 : defaultBackground;
+          const appElement = document.querySelector('.App');
+          appElement.style.backgroundImage = `url(${defaultBg})`;
+          appElement.style.backgroundSize = 'cover';
+          appElement.style.backgroundRepeat = 'no-repeat';
+          setCurrentBackground(defaultBg);
         }
       }
       return newPlaying;
@@ -35,37 +52,46 @@ function App() {
   };
 
   const toggleBackgroundStyle = () => {
-    setIsPsychedelic(!isPsychedelic);
-    if (playingMembers.size === 0) {
-      setCurrentBackground(!isPsychedelic ? defaultBackground2 : defaultBackground);
-    } else {
-      const playingMember = Array.from(playingMembers)[0];
-      try {
-        const bgFileName = !isPsychedelic ? 
+    setIsPsychedelic(prev => {
+      const newIsPsychedelic = !prev;
+      if (playingMembers.size === 0) {
+        const newBg = newIsPsychedelic ? defaultBackground2 : defaultBackground;
+        const appElement = document.querySelector('.App');
+        appElement.style.backgroundImage = `url(${newBg})`;
+        appElement.style.backgroundSize = 'cover';
+        appElement.style.backgroundRepeat = 'no-repeat';
+        setCurrentBackground(newBg);
+      } else {
+        const playingMember = Array.from(playingMembers)[0];
+        const bgFileName = newIsPsychedelic ? 
           `${playingMember.toLowerCase()}-bg2.gif` : 
           `${playingMember.toLowerCase()}-bg.gif`;
-        const bgPath = require(`./assets/background/${bgFileName}`);
-        setCurrentBackground(bgPath);
-      } catch (error) {
-        console.log(`No background GIF found for ${playingMember}`);
+        const fullPath = `/assets/background/${bgFileName}`;
+        console.log('Toggling background to:', fullPath);
+        
+        const appElement = document.querySelector('.App');
+        appElement.style.backgroundImage = `url(${fullPath})`;
+        appElement.style.backgroundSize = 'cover';
+        appElement.style.backgroundRepeat = 'no-repeat';
+        setCurrentBackground(fullPath);
       }
-    }
+      return newIsPsychedelic;
+    });
   };
+
+  // Track page views
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname });
+  }, []);
 
   return (
     <div className="App" style={{ backgroundImage: `url(${currentBackground})` }}>
       <header className="App-header">
-        <h1 className="funky-title">
-          {'FUNK   PUPPETS'.split('').map((letter, index) => (
-            <span 
-              key={index} 
-              className={`dancing-letter ${playingMembers.size > 0 ? 'dancing' : ''}`}
-              style={{ marginLeft: letter === ' ' ? '10px' : '0' }}
-            >
-              {letter}
-            </span>
-          ))}
-        </h1>
+        <img 
+          src={process.env.PUBLIC_URL + '/assets/gifs/logo.gif'} 
+          alt="Funk Puppets Logo"
+          className="logo-gif"
+        />
       </header>
       <div className="style-toggle">
         <button 

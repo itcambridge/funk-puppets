@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Howl } from 'howler';
+import ReactGA from 'react-ga4';
 
 function BandMember({ member, onMemberClick }) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -28,6 +29,9 @@ function BandMember({ member, onMemberClick }) {
       onload: () => {
         console.log(`Successfully loaded: ${soundPath}`);
         setError(null);
+        if (isPlaying) {
+          newSound.play();
+        }
       },
       onloaderror: (id, err) => {
         console.error(`Error loading sound ${soundPath}:`, err);
@@ -44,22 +48,34 @@ function BandMember({ member, onMemberClick }) {
     return () => {
       newSound.unload();
     };
-  }, [currentTrack, member.soundBase, tempo, volume]);
+  }, [currentTrack, member.soundBase]);
+
+  useEffect(() => {
+    if (sound) {
+      sound.rate(tempo);
+    }
+  }, [tempo, sound]);
+
+  useEffect(() => {
+    if (sound) {
+      sound.volume(volume);
+    }
+  }, [volume, sound]);
 
   const handleTempoChange = (e) => {
+    e.stopPropagation();
     const newTempo = parseFloat(e.target.value);
     setTempo(newTempo);
-    if (sound) {
-      sound.rate(newTempo);
-    }
   };
 
   const handleVolumeChange = (e) => {
+    e.stopPropagation();
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
-    if (sound) {
-      sound.volume(newVolume);
-    }
+  };
+
+  const handleTouchStart = (e) => {
+    e.stopPropagation();
   };
 
   const togglePlay = () => {
@@ -67,12 +83,19 @@ function BandMember({ member, onMemberClick }) {
       try {
         if (isPlaying) {
           sound.pause();
-          console.log(`Stopped ${member.name}`);
-          onMemberClick(false);
+          ReactGA.event({
+            category: 'Track',
+            action: 'Stop',
+            label: `${member.name} - Track ${currentTrack}`
+          });
         } else {
           sound.play();
-          console.log(`Playing ${member.name}`);
-          onMemberClick(true);
+          ReactGA.event({
+            category: 'Track',
+            action: 'Play',
+            label: `${member.name} - Track ${currentTrack}`,
+            value: Math.round(tempo * 100)
+          });
         }
         setIsPlaying(!isPlaying);
       } catch (err) {
@@ -118,6 +141,7 @@ function BandMember({ member, onMemberClick }) {
             step="0.05"
             value={tempo}
             onChange={handleTempoChange}
+            onTouchStart={handleTouchStart}
             className="tempo-slider"
           />
           <div className="tempo-label">Speed: {tempo.toFixed(2)}x</div>
@@ -130,6 +154,7 @@ function BandMember({ member, onMemberClick }) {
             step="0.1"
             value={volume}
             onChange={handleVolumeChange}
+            onTouchStart={handleTouchStart}
             className="volume-slider"
           />
           <div className="volume-label">Volume: {Math.round(volume * 100)}%</div>
