@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Howl } from 'howler';
 
-function BandMember({ member, onMemberClick }) {
+function BandMember({ member, onMemberClick, isInSync }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(member.tracks[0]);
   const [sound, setSound] = useState(null);
@@ -9,12 +9,14 @@ function BandMember({ member, onMemberClick }) {
   const [tempo, setTempo] = useState(1.0);
   const [volume, setVolume] = useState(1.0);
   const [imageError, setImageError] = useState(false);
+  const [currentPosition, setCurrentPosition] = useState(null);
 
   useEffect(() => {
     console.log('Static Image Path:', process.env.PUBLIC_URL + member.imagePath);
     console.log('GIF Path:', process.env.PUBLIC_URL + member.gifPath);
   }, [member]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const soundPath = `${process.env.PUBLIC_URL}${member.soundBase}${currentTrack}.mp3`;
     console.log(`Attempting to load sound from: ${soundPath}`);
@@ -26,10 +28,26 @@ function BandMember({ member, onMemberClick }) {
       rate: tempo,
       volume: volume,
       onload: () => {
-        console.log(`Successfully loaded: ${soundPath}`);
+        console.log(`${member.name} loaded:`, soundPath);
         setError(null);
         if (isPlaying) {
           newSound.play();
+          setCurrentPosition(0);
+        }
+      },
+      onplay: () => {
+        setCurrentPosition(0);
+        const element = document.querySelector(`.band-member[data-member="${member.name}"]`);
+        if (element) {
+          element.setAttribute('data-current-position', '0');
+          element.setAttribute('data-duration', (newSound.duration() * 1000).toString());
+        }
+      },
+      onend: () => {
+        setCurrentPosition(0);
+        const element = document.querySelector(`.band-member[data-member="${member.name}"]`);
+        if (element) {
+          element.setAttribute('data-current-position', '0');
         }
       },
       onloaderror: (id, err) => {
@@ -47,7 +65,7 @@ function BandMember({ member, onMemberClick }) {
     return () => {
       newSound.unload();
     };
-  }, [currentTrack, member.soundBase, isPlaying]);
+  }, [currentTrack, member.soundBase, member.name, isPlaying]);
 
   useEffect(() => {
     if (sound) {
@@ -60,6 +78,25 @@ function BandMember({ member, onMemberClick }) {
       sound.volume(volume);
     }
   }, [volume, sound]);
+
+  useEffect(() => {
+    let positionInterval;
+    if (isPlaying && sound) {
+      positionInterval = setInterval(() => {
+        const position = sound.seek() * 1000; // Convert to milliseconds
+        setCurrentPosition(position);
+        const element = document.querySelector(`.band-member[data-member="${member.name}"]`);
+        if (element) {
+          element.setAttribute('data-current-position', position.toString());
+        }
+      }, 50); // Update every 50ms for smooth tracking
+    }
+    return () => {
+      if (positionInterval) {
+        clearInterval(positionInterval);
+      }
+    };
+  }, [isPlaying, sound, member.name]);
 
   const handleTempoChange = (e) => {
     e.stopPropagation();
@@ -85,7 +122,12 @@ function BandMember({ member, onMemberClick }) {
   };
 
   return (
-    <div className="band-member">
+    <div 
+      className={`band-member ${isInSync ? 'in-sync' : ''}`}
+      data-member={member.name}
+      data-tempo={tempo}
+      data-current-position={currentPosition}
+    >
       <div className="member-name">{member.name}</div>
       <img
         src={`${process.env.PUBLIC_URL}${isPlaying ? member.gifPath : member.imagePath}`}

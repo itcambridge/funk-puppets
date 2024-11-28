@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import BandMember from './components/BandMember.js';
 import { bandMembers } from './config/bandMembers.js';
 import './App.css';
@@ -14,6 +14,7 @@ function App() {
   const [currentBackground, setCurrentBackground] = useState(defaultBackground);
   const [playingMembers, setPlayingMembers] = useState(new Set());
   const [isPsychedelic, setIsPsychedelic] = useState(false);
+  const [syncedMembers, setSyncedMembers] = useState(new Set());
 
   const handleBandMemberPlay = (memberName, isPlaying) => {
     console.log('handleBandMemberPlay called:', { memberName, isPlaying });
@@ -50,6 +51,12 @@ function App() {
         img.src = fullUrl;
       } else {
         newPlaying.delete(memberName);
+        // Remove from synced members when stopping
+        setSyncedMembers(prev => {
+          const newSynced = new Set(prev);
+          newSynced.delete(memberName);
+          return newSynced;
+        });
         
         if (newPlaying.size === 0) {
           // Reset to default background
@@ -116,6 +123,69 @@ function App() {
     });
   };
 
+  const checkSync = useCallback(() => {
+    if (playingMembers.size > 1) {
+      const memberElements = Array.from(document.querySelectorAll('.band-member[data-member]'));
+      console.log('Active playing members:', Array.from(playingMembers));
+      
+      const playingElements = memberElements.filter(el => 
+        playingMembers.has(el.dataset.member)
+      );
+
+      // Get all current positions
+      const positions = playingElements.map(el => {
+        const position = parseFloat(el.getAttribute('data-current-position') || '0');
+        const duration = parseFloat(el.getAttribute('data-duration') || '0');
+        console.log(`${el.dataset.member} position:`, position);
+        return { 
+          member: el.dataset.member, 
+          position,
+          normalizedPosition: duration ? (position % duration) : position 
+        };
+      }).filter(({ position }) => position >= 0);
+
+      console.log('Current positions:', positions);
+
+      if (positions.length > 1) {
+        const maxDiff = 50; // 50ms tolerance for extremely tight sync
+        const syncedPairs = new Set();
+        const differences = [];
+
+        // Compare each position against each other position
+        for (let i = 0; i < positions.length; i++) {
+          for (let j = i + 1; j < positions.length; j++) {
+            const diff = Math.abs(positions[i].normalizedPosition - positions[j].normalizedPosition);
+            differences.push({
+              members: [positions[i].member, positions[j].member],
+              diff
+            });
+            console.log(`Position diff between ${positions[i].member} and ${positions[j].member}: ${diff}ms`);
+            if (diff < maxDiff) {
+              // If these two are in sync, add both to the synced set
+              syncedPairs.add(positions[i].member);
+              syncedPairs.add(positions[j].member);
+            }
+          }
+        }
+
+        console.log('Position differences:', differences);
+        console.log('Synced pairs:', Array.from(syncedPairs));
+
+        setSyncedMembers(prev => {
+          const newSynced = new Set(syncedPairs);
+          console.log('Setting synced members:', Array.from(newSynced));
+          return newSynced;
+        });
+      }
+    }
+  }, [playingMembers, setSyncedMembers]);
+
+  // Set up sync detection interval
+  useEffect(() => {
+    const syncInterval = setInterval(checkSync, 100);
+    return () => clearInterval(syncInterval);
+  }, [checkSync]);
+
   // Track page views
   useEffect(() => {
     ReactGA.send({ hitType: "pageview", page: window.location.pathname });
@@ -144,6 +214,7 @@ function App() {
             key={member.id}
             member={member}
             onMemberClick={(isPlaying) => handleBandMemberPlay(member.name, isPlaying)}
+            isInSync={syncedMembers.has(member.name)}
           />
         ))}
       </div>

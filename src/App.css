@@ -543,3 +543,18 @@
     height: 30px;
   }
 }
+
+.band-member.in-sync {
+  border: 2px solid #4caf50;
+  box-shadow: 0 0 15px #4caf50;
+  animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px #4caf50, 0 0 10px #4caf50, 0 0 15px #4caf50;
+  }
+  to {
+    box-shadow: 0 0 10px #4caf50, 0 0 20px #4caf50, 0 0 30px #4caf50;
+  }
+}
