@@ -3,8 +3,8 @@ import './Leaderboard.css';
 
 // Use environment-aware API URL
 const API_URL = process.env.NODE_ENV === 'production'
-  ? `${window.location.origin}/api/leaderboard`  // In production, use domain
-  : 'http://localhost:3001/api/leaderboard';  // In development, use localhost
+  ? `${window.location.origin}/api/scores`  // In production, use domain
+  : 'http://localhost:3005/scores';  // In development, use localhost
 
 function Leaderboard({ isVisible, onClose, currentScore }) {
   const [scores, setScores] = useState([]);
