@@ -1,1 +1,30 @@
- 
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - app-network
+
+  server:
+    build: ./server
+    ports:
+      - "3005:3005"
+    environment:
+      - DB_PATH=/data/scores.db
+    volumes:
+      - sqlite-data:/data
+    networks:
+      - app-network
+
+# Database volume for persistence
+volumes:
+  sqlite-data:
+
+networks:
+  app-network:
+    driver: bridge 

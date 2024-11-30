@@ -2,10 +2,17 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY server/package*.json ./
+COPY package*.json ./
+
 RUN npm install
 
-COPY server .
+COPY . .
 
-EXPOSE 3001
-CMD ["npm", "start"] 
+# Create data directory for SQLite database
+RUN mkdir -p /data && chown -R node:node /data
+
+USER node
+
+EXPOSE 3005
+
+CMD ["node", "server.js"] 

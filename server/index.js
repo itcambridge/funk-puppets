@@ -13,19 +13,19 @@ const db = new sqlite3.Database('leaderboard.db', (err) => {
     console.error('Error opening database:', err);
   } else {
     console.log('Connected to SQLite database');
-    // Create leaderboard table if it doesn't exist
-    db.run(`CREATE TABLE IF NOT EXISTS leaderboard (
+    // Create scores table if it doesn't exist
+    db.run(`CREATE TABLE IF NOT EXISTS scores (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
+      name TEXT DEFAULT 'Anonymous',
       score INTEGER NOT NULL,
-      date DATETIME DEFAULT CURRENT_TIMESTAMP
+      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
   }
 });
 
-// Get top 10 scores
-app.get('/api/leaderboard', (req, res) => {
-  db.all(`SELECT * FROM leaderboard ORDER BY score DESC LIMIT 10`, [], (err, rows) => {
+// Get all scores
+app.get('/scores', (req, res) => {
+  db.all(`SELECT * FROM scores ORDER BY score DESC`, [], (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -35,14 +35,14 @@ app.get('/api/leaderboard', (req, res) => {
 });
 
 // Add new score
-app.post('/api/leaderboard', (req, res) => {
-  const { name, score } = req.body;
-  if (!name || !score) {
-    res.status(400).json({ error: 'Name and score are required' });
+app.post('/scores', (req, res) => {
+  const { score, name = 'Anonymous' } = req.body;
+  if (score === undefined) {
+    res.status(400).json({ error: 'Score is required' });
     return;
   }
 
-  db.run(`INSERT INTO leaderboard (name, score) VALUES (?, ?)`,
+  db.run(`INSERT INTO scores (name, score) VALUES (?, ?)`,
     [name, score],
     function(err) {
       if (err) {
@@ -52,20 +52,24 @@ app.post('/api/leaderboard', (req, res) => {
       res.json({
         id: this.lastID,
         name,
-        score
+        score,
+        timestamp: new Date().toISOString()
       });
     });
 });
 
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../build')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../build', 'index.html'));
+// Clear all scores (for testing)
+app.delete('/scores', (req, res) => {
+  db.run(`DELETE FROM scores`, [], (err) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ message: 'All scores cleared' });
   });
-}
+});
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3005;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 }); 

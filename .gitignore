@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/server/node_modules
 /.pnp
 .pnp.js
 
@@ -11,19 +12,26 @@
 # production
 /build
 
+# database
+*.db
+/server/*.db
+
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env*
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-build.zip
-*.tar.xz
-ffmpeg*.zip
-"# FFmpeg files" 
-"ffmpeg-N-117868-gecc7d5db9c-win64-gpl/" 
-"*.exe" 
+
+# IDE
+.idea/
+.vscode/
+
+# Docker volumes
+data/
