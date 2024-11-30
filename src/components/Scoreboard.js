@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 // Use environment-aware API URL
 const API_URL = process.env.NODE_ENV === 'production'
-  ? `${window.location.origin}/api/scores`  // In production, use domain
+  ? `/api/scores`  // In production, use relative path
   : 'http://localhost:3005/scores';  // In development, use localhost
 
 function Scoreboard() {

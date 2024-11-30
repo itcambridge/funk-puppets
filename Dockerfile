@@ -21,8 +21,9 @@ RUN npm rebuild
 
 # Then copy source files
 COPY . .
-# Skip ESLint during build
+# Set environment variables
 ENV CI=false
+ENV NODE_ENV=production
 RUN npm run build
 
 # Production stage
