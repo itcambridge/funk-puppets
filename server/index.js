@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 const path = require('path');
 
 const app = express();
@@ -8,30 +8,24 @@ app.use(cors());
 app.use(express.json());
 
 // Create SQLite database
-const db = new sqlite3.Database('leaderboard.db', (err) => {
-  if (err) {
-    console.error('Error opening database:', err);
-  } else {
-    console.log('Connected to SQLite database');
-    // Create scores table if it doesn't exist
-    db.run(`CREATE TABLE IF NOT EXISTS scores (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT DEFAULT 'Anonymous',
-      score INTEGER NOT NULL,
-      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`);
-  }
-});
+const db = new Database(process.env.DB_PATH || 'leaderboard.db', { verbose: console.log });
+
+// Create scores table if it doesn't exist
+db.exec(`CREATE TABLE IF NOT EXISTS scores (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT DEFAULT 'Anonymous',
+  score INTEGER NOT NULL,
+  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+)`);
 
 // Get all scores
 app.get('/scores', (req, res) => {
-  db.all(`SELECT * FROM scores ORDER BY score DESC`, [], (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
+  try {
+    const rows = db.prepare('SELECT * FROM scores ORDER BY score DESC').all();
     res.json(rows);
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Add new score
@@ -42,31 +36,28 @@ app.post('/scores', (req, res) => {
     return;
   }
 
-  db.run(`INSERT INTO scores (name, score) VALUES (?, ?)`,
-    [name, score],
-    function(err) {
-      if (err) {
-        res.status(500).json({ error: err.message });
-        return;
-      }
-      res.json({
-        id: this.lastID,
-        name,
-        score,
-        timestamp: new Date().toISOString()
-      });
+  try {
+    const insert = db.prepare('INSERT INTO scores (name, score) VALUES (?, ?)');
+    const result = insert.run(name, score);
+    res.json({
+      id: result.lastInsertRowid,
+      name,
+      score,
+      timestamp: new Date().toISOString()
     });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Clear all scores (for testing)
 app.delete('/scores', (req, res) => {
-  db.run(`DELETE FROM scores`, [], (err) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
+  try {
+    db.prepare('DELETE FROM scores').run();
     res.json({ message: 'All scores cleared' });
-  });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 const PORT = process.env.PORT || 3005;
