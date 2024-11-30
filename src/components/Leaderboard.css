@@ -1,0 +1,187 @@
+.leaderboard-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.leaderboard-content {
+  background: linear-gradient(135deg, #2c3e50, #3498db);
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.leaderboard-content h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.current-score {
+  text-align: center;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.submit-score-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.submit-score-form input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+.submit-score-form button {
+  padding: 10px 20px;
+  background-color: #27ae60;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.submit-score-form button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.submit-score-form button:not(:disabled):hover {
+  background-color: #219a52;
+  transform: scale(1.05);
+}
+
+.scores-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.score-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin: 5px 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
+
+.score-item .rank {
+  font-weight: bold;
+  color: #f1c40f;
+}
+
+.score-item .name {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.score-item .score {
+  font-weight: bold;
+  color: #2ecc71;
+}
+
+.close-button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #e74c3c;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.close-button:hover {
+  background-color: #c0392b;
+}
+
+.error-message {
+  background-color: rgba(231, 76, 60, 0.3);
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px 0;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.no-scores {
+  text-align: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+.score-submitted-message {
+  text-align: center;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: rgba(46, 204, 113, 0.2);
+  border: 2px solid rgba(46, 204, 113, 0.5);
+  border-radius: 10px;
+  color: #2ecc71;
+  font-size: 1.2em;
+  font-weight: bold;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+  animation: pulse 1.5s infinite;
+}
+
+.retry-button {
+  display: block;
+  margin: 10px auto 0;
+  padding: 8px 16px;
+  background-color: #3498db;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.3s ease;
+}
+
+.retry-button:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+} 

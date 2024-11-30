@@ -15,6 +15,9 @@ function App() {
   const [playingMembers, setPlayingMembers] = useState(new Set());
   const [isPsychedelic, setIsPsychedelic] = useState(false);
   const [syncedMembers, setSyncedMembers] = useState(new Set());
+  const [showMaxedOutWarning, setShowMaxedOutWarning] = useState(false);
+  const [isTryingToAddMore, setIsTryingToAddMore] = useState(false);
+  const MAX_PLAYING_MEMBERS = 3;
 
   const handleBandMemberPlay = (memberName, isPlaying) => {
     console.log('handleBandMemberPlay called:', { memberName, isPlaying });
@@ -22,6 +25,12 @@ function App() {
     setPlayingMembers(prevPlaying => {
       const newPlaying = new Set(prevPlaying);
       if (isPlaying) {
+        // Check if adding this member would exceed the limit
+        if (newPlaying.size >= MAX_PLAYING_MEMBERS) {
+          setShowMaxedOutWarning(true);
+          setIsTryingToAddMore(true);
+          return newPlaying; // Return without adding the new member
+        }
         newPlaying.add(memberName);
         
         // Use drums background for singer
@@ -51,6 +60,15 @@ function App() {
         img.src = fullUrl;
       } else {
         newPlaying.delete(memberName);
+        // Hide warning when below max members
+        if (newPlaying.size < MAX_PLAYING_MEMBERS) {
+          setShowMaxedOutWarning(false);
+          setIsTryingToAddMore(false);
+        } else if (newPlaying.size === MAX_PLAYING_MEMBERS) {
+          // Reset to "Maxed out" when back to 3 members
+          setShowMaxedOutWarning(true);
+          setIsTryingToAddMore(false);
+        }
         // Remove from synced members when stopping
         setSyncedMembers(prev => {
           const newSynced = new Set(prev);
@@ -193,13 +211,14 @@ function App() {
 
   return (
     <div className="App" style={{ backgroundImage: `url(${currentBackground})` }}>
-      <header className="App-header">
-        <img 
-          src={process.env.PUBLIC_URL + '/assets/gifs/logo.gif'} 
-          alt="Funk Puppets Logo"
-          className="logo-gif"
-        />
-      </header>
+      {(playingMembers.size >= MAX_PLAYING_MEMBERS) && (
+        <div className="maxed-out-warning">
+          {isTryingToAddMore ? 'Too Many!' : 'Maxed out!'}
+        </div>
+      )}
+      <div className="member-counter">
+        Band Members: {playingMembers.size}
+      </div>
       <div className="style-toggle">
         <button 
           className={`style-button ${!isPsychedelic ? 'active' : ''}`}
