@@ -17,6 +17,11 @@ const gameOverSound = new Howl({
   volume: 0.5
 });
 
+// Use environment-aware API URL
+const API_URL = process.env.NODE_ENV === 'production'
+  ? `${window.location.origin}/api/scores`  // In production, use domain
+  : 'http://localhost:3005/scores';  // In development, use localhost
+
 function App() {
   const [currentBackground, setCurrentBackground] = useState(defaultBackground);
   const [playingMembers, setPlayingMembers] = useState(new Set());
@@ -430,7 +435,7 @@ function App() {
     e.preventDefault();
     setIsSubmittingScore(true);
 
-    fetch('http://localhost:3005/scores', {
+    fetch(API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -443,7 +448,7 @@ function App() {
     .then(response => response.json())
     .then(() => {
       // After submitting, fetch updated scores
-      return fetch('http://localhost:3005/scores');
+      return fetch(API_URL);
     })
     .then(response => response.json())
     .then(data => {

@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
+// Use environment-aware API URL
+const API_URL = process.env.NODE_ENV === 'production'
+  ? `${window.location.origin}/api/scores`  // In production, use domain
+  : 'http://localhost:3005/scores';  // In development, use localhost
+
 function Scoreboard() {
   const [scores, setScores] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -14,7 +19,7 @@ function Scoreboard() {
 
   const fetchScores = () => {
     setIsLoading(true);
-    fetch('http://localhost:3005/scores')
+    fetch(API_URL)
       .then(response => response.json())
       .then(data => {
         const topScores = data
