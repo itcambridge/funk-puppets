@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
-// Use domain-based API URL
-const API_URL = `${window.location.origin}/api/scores`;
+import { API_URL } from '../config/api';
 
 function Scoreboard() {
   const [scores, setScores] = useState([]);

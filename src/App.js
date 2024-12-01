@@ -3,6 +3,7 @@ import BandMember from './components/BandMember.js';
 import FloatingPoints from './components/FloatingPoints.js';
 import Scoreboard from './components/Scoreboard.js';
 import { bandMembers } from './config/bandMembers.js';
+import { API_URL } from './config/api';
 import { Howl } from 'howler';
 import './App.css';
 import ReactGA from 'react-ga4';
@@ -16,11 +17,6 @@ const gameOverSound = new Howl({
   src: ['/assets/sounds/Game_Over.mp3'],
   volume: 0.5
 });
-
-// Use environment-aware API URL
-const API_URL = process.env.NODE_ENV === 'production'
-  ? `${window.location.origin}/api/scores`  // In production, use domain
-  : 'http://localhost:3005/scores';  // In development, use localhost
 
 function App() {
   const [currentBackground, setCurrentBackground] = useState(defaultBackground);
