@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Leaderboard.css';
-
-// Use environment-aware API URL
-const API_URL = process.env.NODE_ENV === 'production'
-  ? `${window.location.origin}/api/scores`  // In production, use domain
-  : 'http://localhost:3005/scores';  // In development, use localhost
+import { API_URL } from '../config/api';
 
 function Leaderboard({ isVisible, onClose, currentScore }) {
   const [scores, setScores] = useState([]);
